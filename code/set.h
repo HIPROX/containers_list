@@ -8,9 +8,10 @@ class Set
 {
 public:
 // Typedefs
-	typedef unsigned UINT;
 	typedef List::value_type value_type;
+	typedef List::size_type size_type;
 	typedef List::iterator iterator;
+	typedef List::const_iterator const_iterator;
 // Constructors & Destructor
 	Set(void);
 	Set(iterator, iterator) throw(std::bad_alloc);
@@ -22,15 +23,15 @@ public:
 // Methods
 	bool empty(void) const;
 	void insert(const value_type&);
-	UINT size(void) const;
+	size_type size(void) const;
 	void erase(const value_type &item);
 	bool isContain(const value_type&) const;
 	bool isContain(const Set&) const;
 // Iterators
 	iterator begin(void);
 	iterator end(void);
-	iterator begin(void) const;
-	iterator end(void) const;
+	const_iterator cbegin(void) const;
+	const_iterator cend(void) const;
 // Friends
 	friend Set association(const Set&, const Set&);
 	friend Set intersection(const Set&, const Set&);

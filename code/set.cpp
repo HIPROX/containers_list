@@ -16,7 +16,7 @@ Set& Set::operator=(const Set&) = default;
 
 std::ostream& operator<<(std::ostream &os, const Set &rhs)
 {
-	for (List::iterator it = rhs.begin(); it != rhs.end(); ++it)
+	for (auto it = rhs.cbegin(); it != rhs.cend(); ++it)
 	{
 		os << *it << ' ';
 	}
@@ -33,21 +33,21 @@ Set::iterator Set::end(void)
 	return this->data.end();
 }
 
-Set::iterator Set::begin(void) const
+Set::const_iterator Set::cbegin(void) const
 {
-	return this->data.begin();
+	return this->data.cbegin();
 }
 
-Set::iterator Set::end(void) const
+Set::const_iterator Set::cend(void) const
 {
-	return this->data.end();
+	return this->data.cend();
 }
 
 void Set::insert(const Set::value_type &item)
 {
 	if (!this->isContain(item))
 	{
-		iterator it = this->begin();
+		auto it = this->begin();
 		for (; it != this->end(); ++it)
 		{
 			if (item < *it)
@@ -73,12 +73,12 @@ void Set::erase(const Set::value_type &item)
 
 bool Set::isContain(const Set::value_type &item) const
 {
-	return (this->end() != data.find(item));
+	return (this->cend() != data.find(item));
 }
 
 bool Set::isContain(const Set &other) const
 {
-	for (iterator ot = other.begin(); ot != other.end(); ++ot)
+	for (auto ot = other.cbegin(); ot != other.cend(); ++ot)
 	{
 		if (!this->isContain(*ot))
 		{
@@ -88,7 +88,7 @@ bool Set::isContain(const Set &other) const
 	return true;
 }
 
-Set::UINT Set::size(void) const
+Set::size_type Set::size(void) const
 {
 	return this->data.length();
 }
@@ -96,7 +96,7 @@ Set::UINT Set::size(void) const
 Set association(const Set &lhs, const Set &rhs)
 {
 	Set res{ lhs };
-	for (List::iterator it = rhs.begin(); it != rhs.end(); ++it)
+	for (auto it = rhs.cbegin(); it != rhs.cend(); ++it)
 	{
 		res.insert(*it);
 	}
@@ -106,7 +106,7 @@ Set association(const Set &lhs, const Set &rhs)
 Set intersection(const Set &lhs, const Set &rhs)
 {
 	Set res{};
-	for (List::iterator it = lhs.begin(); it != lhs.end(); ++it)
+	for (auto it = lhs.cbegin(); it != lhs.cend(); ++it)
 	{
 		if (rhs.isContain(*it))
 		{
@@ -119,7 +119,7 @@ Set intersection(const Set &lhs, const Set &rhs)
 Set difference(const Set &lhs, const Set &rhs)
 {
 	Set res{};
-	for (List::iterator it = lhs.begin(); it != lhs.end(); ++it)
+	for (auto it = lhs.cbegin(); it != lhs.cend(); ++it)
 	{
 		if (!rhs.isContain(*it))
 		{

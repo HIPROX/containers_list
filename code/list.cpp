@@ -9,11 +9,11 @@ List::List(void)
 	tail = iterator{ Tail };
 }
 
-List::List(const value_type& a, size n)
+List::List(const value_type& a, size_type n)
 	throw(std::bad_alloc)
 {
 	List tmp{};
-	for (size i{}; i < n; ++i)
+	for (List::size_type i{}; i < n; ++i)
 	{
 		tmp.push_front(a);
 	}
@@ -23,11 +23,11 @@ List::List(const value_type& a, size n)
 List::List(iterator first, iterator last)
 	throw(std::bad_alloc)
 {
-	Head = Tail = 0;
+	Head = Tail = nullptr;
 	List tmp{};
-	for (iterator ip = first; ip != last; ++ip)
+	for (iterator it = first; it != last; ++it)
 	{
-		tmp.push_back(*ip);
+		tmp.push_back(*it);
 	}
 	this->swap(tmp);
 }
@@ -35,7 +35,7 @@ List::List(iterator first, iterator last)
 List::List(const List& r)
 	throw(std::bad_alloc)
 {
-	Head = Tail = 0;
+	Head = Tail = nullptr;
 	*this = r;
 }
 
@@ -52,15 +52,15 @@ List::~List(void) throw()
 	delete delete_Node;
 }
 
-List& List::operator=(const List& t)
+List& List::operator=(const List& rhs)
 	throw(std::bad_alloc)
 {
-	if (this != &t)
+	if (this != &rhs)
 	{
 		List tmp{};
-		for (iterator ip = t.begin(); ip != t.end(); ++ip)
+		for (auto rhs_it = rhs.cbegin(); rhs_it != rhs.cend(); ++rhs_it)
 		{
-			tmp.push_back(*ip);
+			tmp.push_back(*rhs_it);
 		}
 		this->swap(tmp);
 	}
@@ -77,12 +77,12 @@ List::iterator List::end(void)
 	return tail;
 }
 
-List::iterator List::begin(void) const
+List::const_iterator List::cbegin(void) const
 {
 	return head;
 }
 
-List::iterator List::end(void) const
+List::const_iterator List::cend(void) const
 {
 	return tail;
 }
@@ -92,7 +92,7 @@ bool List::empty(void) const
 	return (Head == Tail);
 }
 
-List::size List::length(void) const
+List::size_type List::length(void) const
 {
 	return count;
 }
@@ -107,9 +107,19 @@ List::value_type& List::back(void)
 	return *(--end());
 }
 
-List::iterator List::find(const value_type& a) const
+const List::value_type& List::front(void) const
 {
-	for (iterator it = begin(); it != end(); ++it)
+	return *cbegin();
+}
+
+const List::value_type& List::back(void) const
+{
+	return *(--cend());
+}
+
+List::iterator List::find(const value_type& a)
+{
+	for (auto it = begin(); it != end(); ++it)
 	{
 		if (*it == a)
 		{
@@ -119,11 +129,23 @@ List::iterator List::find(const value_type& a) const
 	return this->end();
 }
 
+List::const_iterator List::find(const value_type& a) const
+{
+	for (auto it = cbegin(); it != cend(); ++it)
+	{
+		if (*it == a)
+		{
+			return it;
+		}
+	}
+	return this->cend();
+}
+
 void List::push_front(const value_type &value)
 	throw(std::bad_alloc)
 {
 	Node *new_Node = new Node{ value };
-	new_Node->prev = 0;
+	new_Node->prev = nullptr;
 	new_Node->next = Head;
 	Head->prev = new_Node;
 	Head = new_Node;
@@ -137,7 +159,7 @@ void List::pop_front(void)
 	{
 		Node *del = Head;
 		Node *nextel = del->next;
-		nextel->prev = 0;
+		nextel->prev = nullptr;
 		delete del;
 		Head = nextel;
 		head = iterator{Head};
@@ -176,7 +198,7 @@ void List::pop_back(void)
 			Head = Tail;
 			head = iterator{ Head };
 		}
-		else if (prevel != 0)
+		else if (prevel != nullptr)
 		{
 			prevel->next = nextel;
 		}
@@ -238,11 +260,11 @@ void List::erase(iterator first, iterator last)
 
 void List::remove(const value_type &value)
 {
-	for (iterator it = begin(); it != end();)
+	for (auto it = begin(); it != end();)
 	{
 		if (*it == value)
 		{
-			iterator delElement = it;
+			auto delElement = it;
 			++it;
 			erase(delElement);
 		}
@@ -329,21 +351,15 @@ void List::splice(iterator first, List &other) throw()
 	other.head = iterator{ other.Head };
 	this->count += other.count;
 	other.count = 0;
-	/*while (!other.empty())
-	{
-		this->insert(first, other.front());
-		other.pop_front();
-		++first;
-	}*/
 }
 
 void List::sort(void)
 {
-	iterator end = this->end();
-	for (iterator it = this->begin(); it != this->end(); ++it)
+	auto end = this->end();
+	for (auto it = this->begin(); it != this->end(); ++it)
 	{
-		iterator tmp_it = it;
-		for (iterator ot = this->begin(); ot != --end; ++ot)
+		auto tmp_it = it;
+		for (auto ot = this->begin(); ot != --end; ++ot)
 		{
 			if (*it < *ot)
 			{
@@ -356,10 +372,10 @@ void List::sort(void)
 void List::merge(List &other)
 	throw(std::bad_alloc)
 {
-	for (iterator ot = other.begin(); ot != other.end(); ++ot)
+	for (auto ot = other.cbegin(); ot != other.cend(); ++ot)
 	{
-		iterator it = this->begin();
-		for (; it != this->end(); ++it)
+		auto it = this->cbegin();
+		for (; it != this->cend(); ++it)
 		{
 			if (*ot < *it)
 			{
